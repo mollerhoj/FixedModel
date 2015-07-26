@@ -1,0 +1,16 @@
+---
+- :name: Denmark
+  :capital: Copenhagen
+
+- :name: England
+  :language: English
+  :capital: London
+  :center:
+    - 53.562925
+    - 1.806361
+  :cities:
+    :london:
+      :name: London
+      :status: :capital
+    :manchester:
+      :name: Manchester
