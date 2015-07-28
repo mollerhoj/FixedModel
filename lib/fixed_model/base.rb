@@ -5,16 +5,10 @@ module FixedModel
 
     attribute_method_suffix '?'
 
-    # Needs testing
     class << self
-      delegate :find, :take, :take!, :first, :first!, :last, :last!, :exists?, :any?, :many?, to: :all
-      delegate :second, :second!, :third, :third!, :fourth, :fourth!, :fifth, :fifth!, :forty_two, :forty_two!, to: :all
-
-      delegate :select, :group, :order, :except, :reorder, :limit, :offset, :joins, :or,
-               :where, :rewhere, :preload, :eager_load, :includes, :from, :lock, :readonly,
-               :having, :distinct, :references, :none, :unscope, to: :all
-      delegate :count, :average, :minimum, :maximum, :sum, :calculate, to: :all
-      delegate :pluck, :ids, to: :all
+      delegate :find, :first, :first!, :last, :second, :second!, :third, 
+        :third!, :fourth, :fourth!, :fifth, :fifth!, :forty_two, :forty_two!,
+        :count, to: :all
     end
 
     def initialize(row={})

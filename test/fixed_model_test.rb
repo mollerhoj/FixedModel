@@ -6,6 +6,20 @@ class FixedModelTest < ActiveSupport::TestCase
     @england = Country.find_by_name('England')
   end
 
+  test "#self.find" do
+    assert_equal @denmark, Country.find { |c| c.name == "Denmark" }
+  end
+
+  test "#self.first, second, thrid" do
+    assert_equal @england, Country.first 
+    assert_equal @denmark, Country.second
+    assert_equal nil, Country.third
+  end
+
+  test "#self.last" do
+    assert_equal @denmark, Country.last
+  end
+
   test "has default file_path set" do
     assert_equal ['config/fixed_models'], FixedModel.file_paths
   end
