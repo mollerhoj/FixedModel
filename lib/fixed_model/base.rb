@@ -5,6 +5,18 @@ module FixedModel
 
     attribute_method_suffix '?'
 
+    # Needs testing
+    class << self
+      delegate :find, :take, :take!, :first, :first!, :last, :last!, :exists?, :any?, :many?, to: :all
+      delegate :second, :second!, :third, :third!, :fourth, :fourth!, :fifth, :fifth!, :forty_two, :forty_two!, to: :all
+
+      delegate :select, :group, :order, :except, :reorder, :limit, :offset, :joins, :or,
+               :where, :rewhere, :preload, :eager_load, :includes, :from, :lock, :readonly,
+               :having, :distinct, :references, :none, :unscope, to: :all
+      delegate :count, :average, :minimum, :maximum, :sum, :calculate, to: :all
+      delegate :pluck, :ids, to: :all
+    end
+
     def initialize(row={})
       @row = row
       define_attribute_readers
@@ -40,10 +52,6 @@ module FixedModel
       names.uniq.map(&:to_s)
     end
 
-    def self.count
-      data.count
-    end
-
     def self.all
       data.map { |row| new(row) }
     end
@@ -57,7 +65,7 @@ module FixedModel
     end
 
     def read_attribute(attribute)
-      @row[attribute.to_sym]
+      @row[attribute]
     end
 
     def ==(other)
@@ -88,14 +96,14 @@ module FixedModel
 
     def self.define_find_by_attribute(attribute)
       singleton_class.send :define_method, "find_by_#{attribute}" do |arg|
-        row = data.find { |i| i[attribute.to_sym] == arg }
+        row = data.find { |i| i[attribute] == arg } # or sym?
         row ? self.new(row) : nil
       end
     end
 
     def self.define_find_by_attribute!(attribute)
       singleton_class.send :define_method, "find_by_#{attribute}!" do |arg|
-        row = data.find { |i| i[attribute.to_sym] == arg }
+        row = data.find { |i| i[attribute] == arg } # or sym?
         if row
           self.new(row)
         else

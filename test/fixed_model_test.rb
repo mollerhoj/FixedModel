@@ -6,17 +6,47 @@ class FixedModelTest < ActiveSupport::TestCase
     @england = Country.find_by_name('England')
   end
 
+  test "has default file_path set" do
+    assert_equal ['config/fixed_models'], FixedModel.file_paths
+  end
+
+  test "default to use environment paths" do
+    assert_equal true, FixedModel.use_environment_paths
+  end
+
+  test "con configure the use of environment paths" do
+    begin
+      FixedModel.use_environment_paths = false
+      Country.instance_variable_set(:@data, nil) # forces reload
+      assert_equal 1, Country.count
+    ensure
+      FixedModel.use_environment_paths = true
+      Country.instance_variable_set(:@data, nil) # forces reload
+    end
+  end
+
+  test "can configure file paths" do
+    begin
+      FixedModel.file_paths = ['config/custom_directory']
+      Country.instance_variable_set(:@data, nil) # forces reload
+      assert_equal "Spain", Country.first.name
+    ensure
+      FixedModel.file_paths = ['config/fixed_models']
+      Country.instance_variable_set(:@data, nil) # forces reload
+    end
+  end
+
   test "can hold arrays" do
     assert_equal @england.center, [53.562925, 1.806361]
   end
 
   test "can hold nested attributes" do
-    expected = {:name=>"London", :status=>:capital}
+    expected = {"name"=>"London", "status"=>:capital}
     assert_equal expected, @england.cities[:london]
   end
 
   test "can hold symbols" do
-    assert_equal :capital, @england.cities[:london][:status]
+    assert_equal :capital, @england.cities[:london]['status']
   end
 
   test "fixed models has always persisted" do
@@ -44,12 +74,12 @@ class FixedModelTest < ActiveSupport::TestCase
   end
 
   test "#attributes" do
-    expected = {:name=>"Denmark", :capital=>"Copenhagen"}
+    expected = {"name" => "Denmark", "capital" => "Copenhagen"}
     assert_equal expected, @denmark.attributes
   end
 
   test "#self.all" do
-    assert_equal [@denmark, @england], Country.all
+    assert_equal [@england, @denmark], Country.all
   end
 
   test "#self.count" do
@@ -61,7 +91,7 @@ class FixedModelTest < ActiveSupport::TestCase
     Country.each do |country|
       names << country.name
     end
-    assert_equal ["Denmark", "England"], names 
+    assert_equal ["Denmark", "England"].sort, names.sort
   end
 
   test "#attribute_names" do
