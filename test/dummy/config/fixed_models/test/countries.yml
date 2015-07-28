@@ -1,0 +1,12 @@
+---
+denmark:
+  name: Denmark
+  capital: Copenhagen
+
+england:
+  name: England
+  language: English
+  capital: London
+  cities:
+    :manchester:
+      name: Manchester
